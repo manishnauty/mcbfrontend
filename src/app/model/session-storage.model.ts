@@ -1,7 +1,8 @@
 export class SessionStorageModel {
     accessToken: string = '';
-    userId: string = '';
+    userId: number = 0;
     username: string = '';
     refreshToken: string = '';
-    roleId: string = '';
+    roleId: number = 0;
+    businessUnit: string = '';
 }

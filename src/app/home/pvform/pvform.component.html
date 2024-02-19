@@ -1,41 +1,42 @@
 <form [formGroup]="pvForm" (ngSubmit)="submitForm()">
-    <div  class="pvPageMainDiv">
-        <div style="font-size: larger;font-weight: bold;text-align: center;">New Property Valuation</div>
-        <div style="margin: 10px 0px 10px 10px;">
+    <div class="pvPageMainDiv">
+        <div style="font-size: large;font-weight: bold;text-align: center;">New Property Valuation</div>
+        <div style="margin: 20px 0px 10px 10px;">
             <mat-accordion #accordion="matAccordion" multi="true">
                 <mat-expansion-panel hideToggle style="margin-right: 10px;" [expanded]="firstPanel">
                     <mat-expansion-panel-header>
                         <mat-panel-title class="initiatorDetails">
                             Initiators Details
                         </mat-panel-title>
+                        <br><br><br><br>
                     </mat-expansion-panel-header>
                     <div class="row">
                         <div class="col-md-4">
                             <div style="font-weight: bold;">Initiator Name</div>
-                            <mat-form-field  class="example-full-width">
-                                <input matInput formControlName="username">
+                            <mat-form-field class="example-full-width">
+                                <input matInput formControlName="username" readonly>
                             </mat-form-field>
                         </div>
                         <div class="col-md-4">
                             <div style="font-weight: bold;">Initiator Business Unit</div>
-                            <mat-form-field  class="example-full-width">
-                                <input matInput formControlName="buisnessUnit">
+                            <mat-form-field class="example-full-width">
+                                <input matInput formControlName="buisnessUnit" readonly>
                             </mat-form-field>
                         </div>
                         <div class="col-md-4">
                             <div style="font-weight: bold;">Initiator Contact Number</div>
-                            <mat-form-field  class="example-full-width">
-                            <input matInput formControlName="contactNumber">
+                            <mat-form-field class="example-full-width">
+                                <input matInput formControlName="contactNumber">
                             </mat-form-field>
                         </div>
                     </div>
                 </mat-expansion-panel>
-                <mat-expansion-panel [expanded]="firstPanel" hideToggle
-                style="margin-right: 10px;">
+                <mat-expansion-panel [expanded]="firstPanel" hideToggle style="margin-right: 10px;">
                     <mat-expansion-panel-header>
                         <mat-panel-title class="initiatorDetails">
-                            facility Details
+                            Facility Details
                         </mat-panel-title>
+                        <br><br><br><br>
                     </mat-expansion-panel-header>
                     <div class="row">
                         <div class="col-md-4">
@@ -44,58 +45,58 @@
                                 <option selected disabled>Choose title</option>
                                 <option *ngFor="let item of facilityTypes" [value]="item.name">
                                     {{item.name}}
-                                </option> 
+                                </option>
                             </select>
                         </div>
                         <div class="col-md-4">
                             <div style="font-weight: bold;">Catagory</div>
-                            <mat-form-field  class="example-full-width">
+                            <mat-form-field class="example-full-width">
                                 <input matInput formControlName="catagory">
                             </mat-form-field>
                         </div>
                         <div class="col-md-4">
                             <div style="font-weight: bold;">Purpose</div>
-                            <mat-form-field  class="example-full-width">
-                            <input matInput formControlName="purpose">
+                            <mat-form-field class="example-full-width">
+                                <input matInput formControlName="purpose">
                             </mat-form-field>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
                             <div style="font-weight: bold;">Term</div>
-                            <mat-form-field  class="example-full-width">
+                            <mat-form-field class="example-full-width">
                                 <input matInput formControlName="term">
                             </mat-form-field>
                         </div>
                         <div class="col-md-4">
                             <label for="title" tyle="font-weight: bold;">CCY</label><br>
-                            <select  class="form-select" name="title" id="title" formControlName="ccy">
+                            <select class="form-select" name="title" id="title" formControlName="ccy">
                                 <option selected disabled>Choose title</option>
                                 <option *ngFor="let item of currencies" [value]="item.name">
                                     {{item.name}}
-                                  </option>    
+                                </option>
                             </select>
                         </div>
                         <div class="col-md-4">
                             <div>
                                 <div style="font-weight: bold;">Amount</div>
-                                <mat-form-field  class="example-full-width">
+                                <mat-form-field class="example-full-width">
                                     <input matInput formControlName="amount">
                                 </mat-form-field>
                             </div>
                         </div>
                     </div>
                 </mat-expansion-panel>
-                <mat-expansion-panel  [expanded]="firstPanel" hideToggle
-                    style="margin-right: 10px;">
+                <mat-expansion-panel [expanded]="firstPanel" hideToggle style="margin-right: 10px;">
                     <mat-expansion-panel-header>
                         <mat-panel-title class="initiatorDetails">
                             Property Valueat
                         </mat-panel-title>
+                        <br><br><br>
                     </mat-expansion-panel-header>
                     <div class="row">
                         <div class="col-md-4">
-                            <label  tyle="font-weight: bold;">Type Of Valuation</label><br>
+                            <label tyle="font-weight: bold;">Type Of Valuation</label><br>
                             <select formControlName="propertytype">
                                 <option value="" selected disabled>Choose title</option>
                                 <option>New</option>
@@ -104,70 +105,105 @@
                         </div>
                         <div class="col-md-4">
                             <div style="font-weight: bold;">Fos Ref No</div>
-                            <mat-form-field  class="example-full-width">
+                            <mat-form-field class="example-full-width">
                                 <input matInput formControlName="fosreferenceNumber">
                             </mat-form-field>
                         </div>
                     </div>
                 </mat-expansion-panel>
-                <mat-expansion-panel  [expanded]="firstPanel" hideToggle
-                    style="margin-right: 10px;">
+                <mat-expansion-panel [expanded]="firstPanel" hideToggle style="margin-right: 10px;">
                     <mat-expansion-panel-header>
                         <mat-panel-title class="initiatorDetails">
                             Borrower's Details
                         </mat-panel-title>
+                        <br><br><br>
                     </mat-expansion-panel-header>
-                    <div style="font-weight: bold;">Main Borrower</div>
+                    <div formArrayName="borrowers" *ngFor="let borrower of formarray.controls; let i = index">
+                        <div *ngIf="!i" style="font-weight: bold;">Main Borrower </div>
+                        <div *ngIf="i" style="font-weight: bold;">Joint Borrower #{{i}}</div>
+                        <div [formGroupName]="i">
+                            <ng-container>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div style="font-weight: bold;">Customer Number</div>
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput formControlName="customerNumber">
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div style="font-weight: bold;">Customer Name</div>
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput formControlName="name">
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div style="font-weight: bold;">Address</div>
+                                        <mat-form-field class="example-full-width">
+                                            <textarea matInput matTextareaAutosize matAutosizeMinRows=1
+                                                matAutosizeMaxRows=5 formControlName="address"></textarea>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div style="font-weight: bold;">Contact Number</div>
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput formControlName="contactNumber">
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div style="font-weight: bold;">Email</div>
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput formControlName="email">
+                                        </mat-form-field>
+                                    </div>
+                                    <div style="margin-top: 0px;">
+                                        <button style="margin-left: 350px;"
+                                            (click)="deleteBorrower(i)"><mat-icon>delete</mat-icon></button>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+
                     <div class="row">
-                        <div class="col-md-3">
-                            <div style="font-weight: bold;">Customer Number</div>
-                            <mat-form-field  class="example-full-width">
-                                <input matInput formControlName="customerNumber">
-                            </mat-form-field>
-                        </div>
-                        <div class="col-md-3">
-                            <div style="font-weight: bold;">Customer Name</div>
-                            <mat-form-field  class="example-full-width">
-                                <input matInput formControlName="customerName">
-                            </mat-form-field>
-                        </div>
-                        <div class="col-md-6">
-                            <div style="font-weight: bold;">Address</div>
-                            <mat-form-field  class="example-full-width">
-                                <textarea matInput matTextareaAutosize matAutosizeMinRows=1 matAutosizeMaxRows=5
-                                formControlName="address"></textarea>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-md-3">
-                            <div style="font-weight: bold;">Contact Number</div>
-                            <mat-form-field  class="example-full-width">
-                                <input matInput formControlName="borrowercontactNumber">
-                            </mat-form-field>
-                        </div>
-                        <div class="col-md-3">
-                            <div style="font-weight: bold;">Email</div>
-                            <mat-form-field  class="example-full-width">
-                                <input matInput formControlName="email">
-                            </mat-form-field>
-                        </div>
-                    </div> <span><button>Del</button></span>
-                    <div class="row">
-                        <button class="btnCss">Add Joint Borrower</button>
+                        <button class="btnCss" (click)="addBorrower()">Add Joint Borrower</button>
                     </div>
                 </mat-expansion-panel>
             </mat-accordion>
-            <div class="row">
-                <div class="col-md-12">
-                    <div style="font-weight: bold;">Comments</div>
-                    <textarea rows="2" style="width: 99%;" formControlName="comment"></textarea>
+            <div formArrayName="comments" *ngFor="let comments of formarray.controls; let i = index">
+                <div [formGroupName]="i">
+                    <ng-container>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div style="font-weight: bold;">Comments</div>
+                                <textarea rows="2" style="width: 99%;" formControlName="comment"></textarea>
+                            </div>
+                        </div>
+                    </ng-container>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div style="font-weight: bold;">Upload Section</div>
-                    <input type="file" (change)="onChangeFile($event)">
+            <br><br>
+            <div formArrayName="documents" *ngFor="let documents of formarray.controls; let i = index">
+                <div [formGroupName]="i">
+                    <ng-container>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label for="title" tyle="font-weight: bold;">Document Type</label><br>
+                                <select class="form-select" name="title" id="title" formControlName="type">
+                                    <option selected disabled>Choose title</option>
+                                    <option *ngFor="let item of documentTypes" [value]="item.name">
+                                        {{item.name}}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <div style="font-weight: bold;">Upload Section</div>
+                                <input type="file" (change)="onChangeFile($event)">
+                            </div>
+                        </div>
+                    </ng-container>
                 </div>
             </div>
+
             <div style="margin-top: 10px;">
                 <button class="btnCss" type="submit">Submit</button>
                 <button class="btnCss" style="margin-left: 20px;">Cancel</button>

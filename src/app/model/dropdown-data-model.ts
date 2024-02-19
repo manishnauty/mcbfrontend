@@ -1,4 +1,4 @@
 export class DropdownData{
-    id!: String;
+    id!: number;
     name!: String;
 }

@@ -20,6 +20,8 @@ import { MatNativeDateModule, MatOptionModule, MatRippleModule } from '@angular/
 import { MatSelectModule } from '@angular/material/select';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { PvApplicationsViewComponent } from './pv-applications-view/pv-applications-view.component';
+import { AuthGuardService } from '../service/auth.guard';
+import { SessionGuardService } from '../service/session.guard.service';
 
 
 @NgModule({
@@ -51,6 +53,8 @@ import { PvApplicationsViewComponent } from './pv-applications-view/pv-applicati
     MatSnackBarModule,
     MatExpansionModule,
     MatIconButton,
+  ],
+  providers: [MatDatepickerModule, AuthGuardService, SessionGuardService
   ]
 })
 export class HomeModule { }

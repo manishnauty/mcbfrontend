@@ -1,39 +1,49 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { Form, FormArray, FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { pvApplicationRequest } from '../../model/pvApplication-request.model';
-import { PVAppService } from '../../service/pvApp-service';
+import { PVAppService } from '../../service/pvApp.service';
 import { DropdownData } from '../../model/dropdown-data-model';
-import { Borrower } from '../../model/borrower-model';
-import { User } from '../../model/user-model';
-import { Facilty } from '../../model/facility-model';
-import { Comment } from '../../model/comment-model';
-import { Document } from '../../model/document-model';
+import { ApplicationStorageService } from '../../service/application-storage.service';
 
 @Component({
   selector: 'app-pvform',
   templateUrl: './pvform.component.html',
   styleUrl: './pvform.component.scss'
 })
-export class PvformComponent implements OnInit{
-  
+export class PvformComponent implements OnInit {
+
+
+
   pvForm!: FormGroup;
   firstPanel = true;
   panelOpenState = false;
   pvApplicationReq!: pvApplicationRequest;
-  currencies!:DropdownData[];
+  currencies!: DropdownData[];
   facilityTypes!: DropdownData[];
   documentTypes!: DropdownData[];
   fileForUpload!: Blob;
+  formarray!: FormArray
 
 
-  constructor(private pvAppService: PVAppService){
+  constructor(private pvAppService: PVAppService, private fb: FormBuilder, private applicationStorageService: ApplicationStorageService) {
 
   }
 
   ngOnInit(): void {
+    this.pvAppService.getCurrencies().subscribe((res: any) => {
+      this.currencies = res;
+    });
+    this.pvAppService.getFacilityTypes().subscribe((res: any) => {
+      this.facilityTypes = res;
+    });
+    this.pvAppService.getDocumentTypes().subscribe((res: any) => {
+      this.documentTypes = res;
+    });
+    console.log("business unit");
+console.log(this.applicationStorageService.getBusinessUnit());
     this.pvForm = new FormGroup({
-      username: new FormControl(''),
-      buisnessUnit: new FormControl(''),
+      username: new FormControl(this.applicationStorageService.getusername()),
+      buisnessUnit: new FormControl(this.applicationStorageService.getBusinessUnit()),
       contactNumber: new FormControl(''),
       facilityType: new FormControl(''),
       catagory: new FormControl(''),
@@ -43,32 +53,51 @@ export class PvformComponent implements OnInit{
       amount: new FormControl(''),
       propertytype: new FormControl(''),
       fosreferenceNumber: new FormControl(''),
-      customerName: new FormControl(''),
-      customerNumber: new FormControl(''),
-      address: new FormControl(''),
-      borrowercontactNumber: new FormControl(''),
-      email: new FormControl(''),
-      comment: new FormControl('')
+      borrowers: new FormArray([this.addBorrowerForm()]),
+      comments: new FormArray([this.addCommentsForm()]),
+      documents: new FormArray([this.addDocumentsForm()]),
     });
-    this.pvAppService.getCurrencies().subscribe((res: any) => {
-      console.log(res);
-      this.currencies = res;
-    });
-    this.pvAppService.getFacilityTypes().subscribe((res: any) => {
-      console.log(res);
-      this.facilityTypes = res;
-    });
-    this.pvAppService.getDocumentTypes().subscribe((res: any) => {
-      console.log(res);
-      this.documentTypes = res;
-    });
+    this.applicationStorageService.getBusinessUnit();
+    this.formarray = this.pvForm.get('borrowers') as FormArray;
+  }
 
+  addBorrowerForm(): FormGroup {
+    return this.fb.group({
+      name: "",
+      customerNumber: "",
+      address: "",
+      contactNumber: "",
+      email: ""
+    });
+  }
+
+  addCommentsForm(): FormGroup {
+    return this.fb.group({
+      comment: "",
+      createdDate: ""
+    });
+  }
+
+  addDocumentsForm(): FormGroup {
+    return this.fb.group({
+      type: { id: "", name: "" },
+      document: ""
+    });
+  }
+
+  addBorrower() {
+    this.formarray.push(this.addBorrowerForm())
+  }
+
+  deleteBorrower(i: number) {
+    this.formarray.removeAt(i);
   }
 
   submitForm() {
-    //console.log(this.pvForm.value);
+    console.log(this.pvForm.value);
     this.pvApplicationReq = new pvApplicationRequest();
     this.populatePvApplicationRequest(this.pvApplicationReq);
+    console.log(this.formarray);
     console.log(this.pvApplicationReq);
     this.pvAppService.createPvForm(this.pvApplicationReq, this.fileForUpload).subscribe(res =>{
       console.log(res);
@@ -77,45 +106,49 @@ export class PvformComponent implements OnInit{
     })
   }
 
-  populatePvApplicationRequest(request: pvApplicationRequest){
-    request.fosreferenceNumber = this.pvForm.value.fosreferenceNumber;
-    request.type = this.pvForm.value.propertytype;
-    request.createBy = new User();
-    request.createBy.username = this.pvForm.value.username;
-    request.createBy.buisnessUnit = this.pvForm.value.buisnessUnit;
-    request.createBy.contactNumber =  this.pvForm.value.contactNumber;
-    request.facilityDto = new Facilty();
-    request.facilityDto.amount =  this.pvForm.value.amount;
-    request.facilityDto.catagory =  this.pvForm.value.catagory;
-    request.facilityDto.purpose =  this.pvForm.value.purpose;
-    request.facilityDto.term = this.pvForm.value.term;
-    request.facilityDto.ccy = new DropdownData();
-    request.facilityDto.type = new DropdownData();
-    request.facilityDto.ccy.name =  this.pvForm.value.ccy;
-    request.facilityDto.type.name =  this.pvForm.value.facilityType;
-    request.borrowersDto[0] = new Borrower();
-    request.borrowersDto[0].name = this.pvForm.value.customerName;
-    request.borrowersDto[0].address = this.pvForm.value.address;
-    request.borrowersDto[0].contactNumber = this.pvForm.value.borrowercontactNumber;
-    request.borrowersDto[0].customerNumber = this.pvForm.value.customerNumber;
-    request.borrowersDto[0].email =  this.pvForm.value.email;
-    
-    request.commentsDto[0] = new Comment();
-    request.commentsDto[0].comments = this.pvForm.value.comment;
-    request.commentsDto[0].createdDate =  "12/1/2014";
+  populatePvApplicationRequest(request: pvApplicationRequest) {
+    const formData = this.pvForm.value;
+    request.fosreferenceNumber = formData.fosreferenceNumber;
+    request.type = formData.propertytype;
+    request.createBy = {
+      userid: this.applicationStorageService.getUserId(),
+      username: this.applicationStorageService.getusername(),
+      businessUnit: this.applicationStorageService.getBusinessUnit(),
+      contactNumber: formData.contactNumber,
+      roles: { id: this.applicationStorageService.getroleId(), name: '' }
+    };
 
-    request.documentsDto[0] = new Document();
-    request.documentsDto[0].document = "file";
-    request.documentsDto[0].type = new DropdownData();
-    request.documentsDto[0].type.name = "sale deed";
+    request.facilityDto = {
+      amount: formData.amount,
+      catagory: formData.catagory,
+      purpose: formData.purpose,
+      term: formData.term,
+      ccy: { id: 0, name: formData.ccy },
+      type: { id: 0, name: formData.facilityType }
+    }
+    request.borrowersDto = [...formData.borrowers];
+    request.commentsDto = [...formData.comments];
+    request.documentsDto = [
+      {
+        type: { id: 0, name: formData.type },
+        document: ""
+      }
+    ];
+   // request.documentsDto = [...formData.documents];
+
+    // request.documentsDto[0] = new Document();
+    // request.documentsDto[0].document = "file";
+    // request.documentsDto[0].type = new DropdownData();
+    // request.documentsDto[0].type.name = "sale deed";
+  
   }
 
-  onChangeFile(event:any){
-    if(event.target.files.length > 0){
+  onChangeFile(event: any) {
+    if (event.target.files.length > 0) {
       console.log("file added");
-        const file = event.target.files[0];
-        console.log(file);
-        this.fileForUpload = file;  
+      const file = event.target.files[0];
+      console.log(file);
+      this.fileForUpload = file;
     }
   }
 

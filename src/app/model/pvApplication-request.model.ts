@@ -13,4 +13,5 @@ export class pvApplicationRequest{
     borrowersDto: Borrower[] = [];
     documentsDto: Document[] = [];
     commentsDto: Comment[] = [];
+  request: any;
 }

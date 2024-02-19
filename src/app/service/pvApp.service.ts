@@ -1,4 +1,4 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { ApiConstants, AppConstants } from "../app.constants";
 import { pvApplicationRequest } from "../model/pvApplication-request.model";
@@ -27,6 +27,7 @@ export class PVAppService {
         let formData = new FormData();
         formData.append("file",file);
         formData.append("appData",JSON.stringify(pvApplicationReq));
+
         return this.http.post<any>(url, formData);
     }
 }

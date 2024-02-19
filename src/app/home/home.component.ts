@@ -8,15 +8,19 @@ import { Router } from "@angular/router";
 })
 export class HomeComponent {
 
+  view: boolean = true;
+
   constructor(private router: Router){
 
   }
 
   homepage() {
-    this.router.navigate(['pvform']);
+    this.router.navigate(['home/pvform']);
+    this.view = false;
   }
   viewpage(){
-    this.router.navigate(['pvview']);
+    this.router.navigate(['home/pvview']);
+    this.view = true;
   }
 
 }
