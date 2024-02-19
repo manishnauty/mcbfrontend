@@ -4,8 +4,11 @@ import com.mcb.bankpropertyevaluation.controller.payload.PVApplicationDto;
 import com.mcb.bankpropertyevaluation.dao.entity.*;
 import com.mcb.bankpropertyevaluation.dao.entity.Currency;
 import com.mcb.bankpropertyevaluation.dao.repository.*;
+import com.mcb.bankpropertyevaluation.security.services.UserDetailsImpl;
 import com.mcb.bankpropertyevaluation.service.PVApplicationIngestService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -73,31 +76,18 @@ public class PVApplicationIngestImpl implements PVApplicationIngestService {
 
         pvAppDto.getDocumentsDto().forEach(documentDto -> {
             Document document = new Document();
-           // document.setDocument(documentDto.getDocument());
+            try {
+                document.setDocument(file.getBytes());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
             DocumentType documentType;
             if (Objects.nonNull(documentDto.getType().getName())){
-//                documentType = new DocumentType();
-//                documentType.setName(documentDto.getType().getName());
-//                document.setType(documentType);
                 documentType = documentTypeRepository.findByName(documentDto.getType().getName());
                 if (Objects.nonNull(documentType)){
                     document.setType(documentType);
-                    try {
-                        document.setDocument(file.getBytes());
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                } else{
-                    documentType = new DocumentType();
-                    try {
-                        document.setDocument(file.getBytes());
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                   // documentType.setName(documentDto.getType().getName());
-                   // document.setType(documentType);
                 }
-
             }
             documentList.add(document);
         });
@@ -133,21 +123,9 @@ public class PVApplicationIngestImpl implements PVApplicationIngestService {
     private void populateFacilityTypeAndCurrency(PVApplicationDto pvAppDto, Facility facility) {
         FacilityType facilityType;
         Currency currency;
-//        facilityType = new FacilityType();
-//        facilityType.setName(pvAppDto.getFacilityDto().getType().getName());
-//        facility.setType(facilityType);
-//
-//        currency = new Currency();
-//        currency.setName(pvAppDto.getFacilityDto().getType().getName());
-//        facility.setCcy(currency);
-
         if (Objects.nonNull(pvAppDto.getFacilityDto().getType().getName())){
             facilityType = facilityTypeRepository.findByName(pvAppDto.getFacilityDto().getType().getName());
             if (Objects.nonNull(facilityType)){
-                facility.setType(facilityType);
-            } else{
-                facilityType = new FacilityType();
-                facilityType.setName(pvAppDto.getFacilityDto().getType().getName());
                 facility.setType(facilityType);
             }
         }
@@ -155,30 +133,29 @@ public class PVApplicationIngestImpl implements PVApplicationIngestService {
             currency = currencyRepository.findByName(pvAppDto.getFacilityDto().getCcy().getName());
             if (Objects.nonNull(currency)){
                 facility.setCcy(currency);
-            } else{
-                currency = new Currency();
-                currency.setName(pvAppDto.getFacilityDto().getType().getName());
-                facility.setCcy(currency);
             }
         }
     }
 
     private PVApplication populateUserData(PVApplication pvApplication, PVApplicationDto pvAppDto) {
         User user = null;
-        if (Objects.nonNull(pvAppDto.getCreatedBy()) && Objects.nonNull(pvAppDto.getCreatedBy().getId())){
+        if (Objects.nonNull(pvAppDto.getCreatedBy()) && Objects.nonNull(pvAppDto.getCreatedBy().getUserid())){
             Optional<User> optionalUser;
-            optionalUser = userRepository.findById(pvAppDto.getCreatedBy().getId());
+            optionalUser = userRepository.findById(pvAppDto.getCreatedBy().getUserid());
             if(optionalUser.isPresent()){
                 user = optionalUser.get();
                 user.setContactNumber(pvAppDto.getCreatedBy().getContactNumber());
+            } else {
+                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+                UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+                Optional<User> usr = userRepository.findById(userDetails.getId());
+                user = usr.get();
             }
         } else {
-            user = new User();
-            user.setUsername("Username()");
-            user.setContactNumber("ContactNumber()");
-            //<Role> roles = populateRoles(pvAppDto);
-            //user.setRoles(roles);
-            user.setBuisnessUnit("BuisnessUnit()");
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            Optional<User> usr = userRepository.findById(userDetails.getId());
+            user = usr.get();
         }
 
         pvApplication.setCreatedBy(user);

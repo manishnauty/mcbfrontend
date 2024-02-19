@@ -3,7 +3,10 @@ package com.mcb.bankpropertyevaluation.dao.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -11,6 +14,8 @@ import java.util.Set;
 @Entity
 @Table(name = "users")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
 
     @Id
@@ -34,4 +39,11 @@ public class User {
 
     @Size(max = 120)
     private String password;
+
+    public User(String username, String password, String contactNumber, String buisnessUnit) {
+        this.username = username;
+        this.password = password;
+        this.buisnessUnit = buisnessUnit;
+        this.contactNumber = contactNumber;
+    }
 }

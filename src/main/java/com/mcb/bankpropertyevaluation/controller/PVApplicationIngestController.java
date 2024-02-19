@@ -9,6 +9,7 @@ import com.mcb.bankpropertyevaluation.service.PVApplicationIngestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.MediaTypeEditor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,7 +26,7 @@ public class PVApplicationIngestController {
 
 //    @PostMapping("/evaluationform")
 //    public ResponseEntity<String> createEvaluationApplication(@RequestBody PVApplicationDto pvAppDto){
-//        pvApplicationIngestService.createEvaluationApplication(pvAppDto);
+//        pvApplicationIngestService.updateEvaluationApplication(pvAppDto);
 //        return new ResponseEntity<>("success", HttpStatus.OK);
 //    }
 
@@ -40,7 +41,7 @@ public class PVApplicationIngestController {
         pvApplicationIngestService.createEvaluationApplication(pvAppDto,file);
         return new ResponseEntity<>("success", HttpStatus.OK);
     }
-    @PutMapping(value = "/evaluationform")
+    @PutMapping(path = "/evaluationformupdate")
     public ResponseEntity<String> updateEvaluationApplication(@Valid @RequestBody PVApplicationDto pvAppDto){
         pvApplicationIngestService.updateEvaluationApplication(pvAppDto);
         return new ResponseEntity<>("success", HttpStatus.OK);
