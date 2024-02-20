@@ -6,5 +6,4 @@ import org.springframework.web.multipart.MultipartFile;
 public interface PVApplicationIngestService {
     String createEvaluationApplication(PVApplicationDto pvAppDto, MultipartFile file);
 
-    String updateEvaluationApplication(PVApplicationDto pvAppDto);
 }

@@ -17,4 +17,6 @@ public interface PVApplicationReadService {
     List<PVApplicationDto> fetchApplication();
 
     PVApplicationDto fetchApplicationById(Long id);
+
+    Long getNextAppReference();
 }

@@ -14,10 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
-public class PVApplicationIngestImpl implements PVApplicationIngestService {
+public class PVApplicationIngestServiceImpl implements PVApplicationIngestService {
+
+    SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
     @Autowired
     private PVApplicationRepository pvApplicationRepository;
 
@@ -40,17 +43,12 @@ public class PVApplicationIngestImpl implements PVApplicationIngestService {
         return "success";
     }
 
-    @Override
-    public String updateEvaluationApplication(PVApplicationDto pvAppDto) {
-       // PVApplication pvApplication = populateApplicationData(pvAppDto);
-       // pvApplicationRepository.save(pvApplication);
-        return "success";
-    }
-
     private PVApplication populateApplicationData(PVApplicationDto pvAppDto, MultipartFile file) {
         PVApplication pvApplication = new PVApplication();
         pvApplication.setType(pvAppDto.getType());
         pvApplication.setFosreferenceNumber(pvAppDto.getFosreferenceNumber());
+        pvApplication.setReferenceNumber(generateReferenceNumber(pvAppDto.getFosreferenceNumber()));
+        pvApplication.setCreatedOn(DATE_FORMAT.format(new Date()));
         populateDocuments(pvApplication, pvAppDto, file);
         populateUserData(pvApplication, pvAppDto);
         populateFacilityData(pvApplication, pvAppDto);
@@ -60,11 +58,20 @@ public class PVApplicationIngestImpl implements PVApplicationIngestService {
         return pvApplication;
     }
 
+    private String generateReferenceNumber(String fosreferenceNumber) {
+        String[] fosRefArr =fosreferenceNumber.split("/");
+        return new StringBuilder()
+                .append("PV")
+                .append(fosRefArr[0])
+                .append(fosRefArr[1])
+                .append(fosRefArr[2]).toString();
+    }
+
     private void populateComments(PVApplication pvApplication, PVApplicationDto pvAppDto) {
         List<Comment> commentList = new ArrayList<>();
         pvAppDto.getCommentsDto().forEach(commentDto ->{
             Comment comment = new Comment();
-            comment.setComments(commentDto.getComments());
+            comment.setComments(commentDto.getComment());
             comment.setCreatedDate(commentDto.getCreatedDate());
             commentList.add(comment);
         });

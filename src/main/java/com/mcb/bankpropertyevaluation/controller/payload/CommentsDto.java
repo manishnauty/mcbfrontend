@@ -6,5 +6,5 @@ import lombok.Data;
 public class CommentsDto {
     private Long id;
     private String createdDate;
-    private String comments;
+    private String comment;
 }

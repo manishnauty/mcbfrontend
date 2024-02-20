@@ -12,11 +12,4 @@ public class BankPropertyEvaluationAppApplication {
 		SpringApplication.run(BankPropertyEvaluationAppApplication.class, args);
 	}
 
-//	@Bean(name="entityManagerFactory")
-//	public LocalSessionFactoryBean sessionFactory() {
-//		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-//
-//		return sessionFactory;
-//	}
-
 }

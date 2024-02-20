@@ -2,10 +2,14 @@ package com.mcb.bankpropertyevaluation.dao.entity;
 
 import javax.persistence.*;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Document {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)

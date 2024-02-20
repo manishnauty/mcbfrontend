@@ -2,10 +2,15 @@ package com.mcb.bankpropertyevaluation.dao.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Facility {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)

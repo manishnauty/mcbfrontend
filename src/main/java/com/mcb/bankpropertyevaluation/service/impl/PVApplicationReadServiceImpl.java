@@ -126,10 +126,20 @@ public class PVApplicationReadServiceImpl implements PVApplicationReadService {
         return pvApplicationDto;
     }
 
+    @Override
+    @Transactional
+    public Long getNextAppReference() {
+        Long nextRefNo = pvApplicationRepository.findMaxId();
+        return nextRefNo+1;
+    }
+
     private void populatePvApplicationResponse(PVApplicationDto pVApplicationDto, PVApplication pvApplication) {
         pVApplicationDto.setId(pvApplication.getId());
         pVApplicationDto.setType(pvApplication.getType());
         pVApplicationDto.setFosreferenceNumber(pvApplication.getFosreferenceNumber());
+        pVApplicationDto.setReferenceNumber(pvApplication.getReferenceNumber());
+        pVApplicationDto.setCreatedOn(pvApplication.getCreatedOn());
+        pVApplicationDto.setModifiedOn(pvApplication.getModifiedOn());
         pVApplicationDto.setCreatedBy(populateUserDto(pvApplication));
         pVApplicationDto.setFacilityDto(populateFacilityDto(pvApplication));
         pVApplicationDto.setBorrowersDto(populateBorrowerDto(pvApplication));
