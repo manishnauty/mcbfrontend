@@ -1,23 +1,25 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { PVAppService } from '../../service/pvApp.service';
+import { Router } from '@angular/router';
 
 export interface PeriodicElement {
   reference: string;
-  receivedOn: string;
+  type: string,
   borrowerName: string;
   fosRef: string;
   createdOn: string;
   modifiedOn: string;
 }
 
-const ELEMENT_DATA: PeriodicElement[] = [
-  {reference: 'PV20230912', receivedOn: '12/12/2012 09:23', borrowerName: 'customer one', fosRef: '12092390', createdOn:'12/12/2012 09:23', modifiedOn:'12/12/2012 09:23'},
-  {reference: 'PV20230913', receivedOn: '12/12/2012 09:23', borrowerName: 'customer two', fosRef: '12092390', createdOn:'12/12/2012 09:23', modifiedOn:'12/12/2012 09:23'},
-  {reference: 'PV20230914', receivedOn: '12/12/2012 09:23', borrowerName: 'customer three', fosRef: '12092390', createdOn:'12/12/2012 09:23', modifiedOn:'12/12/2012 09:23'},
-  {reference: 'PV20230915', receivedOn: '12/12/2012 09:23', borrowerName: 'customer four', fosRef: '12092390', createdOn:'12/12/2012 09:23', modifiedOn:'12/12/2012 09:23'},
-  {reference: 'PV20230918', receivedOn: '12/12/2012 09:23', borrowerName: 'customer one', fosRef: '12092390', createdOn:'12/12/2012 09:23', modifiedOn:'12/12/2012 09:23'},
-  {reference: 'PV20230912', receivedOn: '12/12/2012 09:23', borrowerName: 'customer one', fosRef: '12092390', createdOn:'12/12/2012 09:23', modifiedOn:'12/12/2012 09:23'},
-  {reference: 'PV20230912', receivedOn: '12/12/2012 09:23', borrowerName: 'customer one', fosRef: '12092390', createdOn:'12/12/2012 09:23', modifiedOn:'12/12/2012 09:23'},
-  {reference: 'PV20230912', receivedOn: '12/12/2012 09:23', borrowerName: 'customer one', fosRef: '12092390', createdOn:'12/12/2012 09:23', modifiedOn:'12/12/2012 09:23'}
+const SAMPLE_TABLE_DATA: PeriodicElement[] = [
+  { reference: 'PV20230912', type: 'New', borrowerName: 'customer one', fosRef: '12092390', createdOn: '12/12/2012 09:24', modifiedOn: 'user' },
+  { reference: 'PV20230913', type: 'New', borrowerName: 'customer two', fosRef: '12092390', createdOn: '12/12/2012 09:24', modifiedOn: 'user' },
+  { reference: 'PV20230914', type: 'New', borrowerName: 'customer three', fosRef: '12092390', createdOn: '12/12/2012 09:24', modifiedOn: 'user' },
+  { reference: 'PV20230915', type: 'New', borrowerName: 'customer four', fosRef: '12092390', createdOn: '12/12/2012 09:24', modifiedOn: 'user' },
+  { reference: 'PV20230918', type: 'New', borrowerName: 'customer one', fosRef: '12092390', createdOn: '12/12/2012 09:24', modifiedOn: 'user' },
+  { reference: 'PV20230912', type: 'New', borrowerName: 'customer one', fosRef: '12092390', createdOn: '12/12/2012 09:24', modifiedOn: 'user' },
+  { reference: 'PV20230912', type: 'New', borrowerName: 'customer one', fosRef: '12092390', createdOn: '12/12/2012 09:24', modifiedOn: 'user' },
+  { reference: 'PV20230912', type: 'New', borrowerName: 'customer one', fosRef: '12092390', createdOn: '12/12/2012 09:24', modifiedOn: 'user' }
 ];
 
 @Component({
@@ -26,14 +28,39 @@ const ELEMENT_DATA: PeriodicElement[] = [
   styleUrl: './pv-applications-view.component.scss'
 })
 
-export class PvApplicationsViewComponent {
+export class PvApplicationsViewComponent implements OnInit {
 
-  displayedColumns: string[] = ['reference', 'receivedOn', 'borrowerName', 'fosRef','createdOn','modifiedOn','actions','view'];
-  dataSource = ELEMENT_DATA;
+  sourceArr: [] = [];
+  appArr: [] = [];
 
-  filterData($event: any){
-    console.log("filter event called");
-    this.dataSource.filter = $event.target.value;
+  constructor(private pvAppService: PVAppService, private router: Router) { }
+
+
+  ngOnInit(): void {
+    this.pvAppService.fetchApplications().subscribe((res: any) => {
+      this.appArr = [...res] as any;
+      this.sourceArr = [...res] as any;
+    });
+
+  }
+
+  displayedColumns: string[] = ['reference', 'type', 'borrowerName', 'fosRef', 'createdOn', 'modifiedOn', 'actions', 'view'];
+  dataSource = SAMPLE_TABLE_DATA;
+
+  filterData($event: any) {
+    let event = $event.target.value;
+    if(event){
+      this.appArr = this.sourceArr.filter((row:any):any[] => {
+        return row.referenceNumber.includes(event) || row.fosreferenceNumber.includes(event) || row.createdOn.includes(event);
+      }) as any;
+    } else {
+      this.appArr = [...this.sourceArr];
+    }
+   
+  }
+
+  createAppPage() {
+    this.router.navigate(['home/pvform']);
   }
 
 

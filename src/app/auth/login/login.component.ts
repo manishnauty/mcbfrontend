@@ -39,7 +39,6 @@ form: FormGroup = this.fb.group({
           this.applicationStorage.setroleId(res.roleId);
           this.applicationStorage.setbusinessUnit(res.businessUnit);
           sessionStorage.setItem('refreshToken', res.refreshToken )
-          console.log(this.applicationStorage.getAccessToken());
           this.router.navigate(["home"]);
       },(error=>{
         alert("Invalid username or password");

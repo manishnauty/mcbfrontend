@@ -43,6 +43,13 @@ export class ApplicationStorageService {
     getBusinessUnit(){
         return this.sessionStorageModel.businessUnit;
     }
+    public setRefNo(refNo: number){
+        this.sessionStorageModel.refNo = refNo;
+    }
+    getRefNo(){
+        return this.sessionStorageModel.refNo;
+    }
+
     clear() {
         this.sessionStorageModel = new SessionStorageModel();
     }

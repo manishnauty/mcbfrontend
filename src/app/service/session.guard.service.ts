@@ -63,9 +63,6 @@ export class SessionGuardService implements CanActivate {
     }
     private isTokenExpired(token: string) {
         const expiry = (JSON.parse(atob(token.split('.')[1]))).exp;
-        console.log(expiry * 1000);
-        console.log(Date.now())
-        console.log(expiry * 1000 > Date.now());
         return expiry * 1000 > Date.now();
     }
     

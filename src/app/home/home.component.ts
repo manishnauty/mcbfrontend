@@ -1,26 +1,38 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from "@angular/router";
+import { PVAppService } from '../service/pvApp.service';
+import { ApplicationStorageService } from '../service/application-storage.service';
+import { LoginService } from '../service/login.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
 
   view: boolean = true;
 
-  constructor(private router: Router){
+  constructor(private router: Router, private pvAppService: PVAppService, private appStorageService: ApplicationStorageService,
+    private loginService: LoginService, private applicationStorage: ApplicationStorageService) {
 
   }
-
-  homepage() {
-    this.router.navigate(['home/pvform']);
-    this.view = false;
+  ngOnInit(): void {
+    this.pvAppService.getNextAppRefNo().subscribe((res: any) => {
+      this.appStorageService.setRefNo(res);
+    });
   }
-  viewpage(){
-    this.router.navigate(['home/pvview']);
-    this.view = true;
+
+  logout() {
+    this.loginService.logout().subscribe(res => {
+      this.applicationStorage.clear();
+      sessionStorage.clear();
+      this.router.navigate(['login'])
+    }, (error => {
+      this.applicationStorage.clear();
+      this.router.navigate(['login'])
+    }
+    ));
   }
 
 }

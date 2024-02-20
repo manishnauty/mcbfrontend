@@ -1,16 +1,21 @@
-<div class="headerDiv" >
-<span class = "headerTitle">Property Evaluation Application</span>
+<div class="headerDiv">
+    <span class="headerTitle">Property Evaluation Application</span><span>
+        <i class="fa fa-sign-out fa-2x" style="cursor: pointer;float: right;
+        padding-top: 5px;padding-right: 15px; font-size: 40px;" aria-hidden="true" (click)="logout()"
+            matTooltip="Logout"></i>
+    </span>
 </div>
-<br>
-<div>
+<!-- <div>
     <div class="row" style="float: right;">
-        <div *ngIf="view" class="col-md-4" >
-            <button class="btn-primary" (click)="homepage()" style="padding-left: 40px;padding-right: 40px;">Create Applications</button>
+        <div *ngIf="view" class="col-md-4">
+            <button class="btn-primary" (click)="homepage()" style="padding-left: 40px;padding-right: 40px;">Create
+                Applications</button>
         </div>
-        <div *ngIf="!view" class="col-md-4" >
-            <button class="btn-primary" (click)="viewpage()" style="padding-left: 40px;padding-right: 40px;">View Applications</button>
+        <div *ngIf="!view" class="col-md-4">
+            <button class="btn-primary" (click)="viewpage()"
+                style="padding-left: 40px;padding-right: 40px; padding">View Applications</button>
         </div>
     </div>
-</div>
+</div> -->
 <br>
 <router-outlet></router-outlet>

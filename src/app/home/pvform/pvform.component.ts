@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Form, FormArray, FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
-import { pvApplicationRequest } from '../../model/pvApplication-request.model';
+import { PVApplicationRequest } from '../../model/pvApplication-request.model';
 import { PVAppService } from '../../service/pvApp.service';
 import { DropdownData } from '../../model/dropdown-data-model';
 import { ApplicationStorageService } from '../../service/application-storage.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-pvform',
@@ -17,70 +18,108 @@ export class PvformComponent implements OnInit {
   pvForm!: FormGroup;
   firstPanel = true;
   panelOpenState = false;
-  pvApplicationReq!: pvApplicationRequest;
+  pvApplicationReq!: PVApplicationRequest;
   currencies!: DropdownData[];
   facilityTypes!: DropdownData[];
   documentTypes!: DropdownData[];
+  nexRefNo!: number;
   fileForUpload!: Blob;
-  formarray!: FormArray
+  formarray!: FormArray;
+  comments!: FormArray;
+  documents!: FormArray
 
 
-  constructor(private pvAppService: PVAppService, private fb: FormBuilder, private applicationStorageService: ApplicationStorageService) {
-
+  constructor(private pvAppService: PVAppService, private fb: FormBuilder, private applicationStorageService: ApplicationStorageService,
+    private router: Router) {
   }
 
   ngOnInit(): void {
+
+
     this.pvAppService.getCurrencies().subscribe((res: any) => {
       this.currencies = res;
-    });
+    }, (error => {
+      alert("Error occured while fetching currencies");
+    }
+    ));
     this.pvAppService.getFacilityTypes().subscribe((res: any) => {
       this.facilityTypes = res;
-    });
+    }, (error => {
+      alert("Error occured while fetching facilities");
+    }
+    ));
     this.pvAppService.getDocumentTypes().subscribe((res: any) => {
       this.documentTypes = res;
-    });
-    console.log("business unit");
-console.log(this.applicationStorageService.getBusinessUnit());
+    }, (error => {
+      alert("Error occured while fetching Document Types");
+    }
+    ));
+
+    let month = (new Date()).getMonth() + 1;
+    const referenceNumber = (new Date()).getFullYear() + "/" + month + "/" + this.applicationStorageService.getRefNo();
+
     this.pvForm = new FormGroup({
-      username: new FormControl(this.applicationStorageService.getusername()),
-      buisnessUnit: new FormControl(this.applicationStorageService.getBusinessUnit()),
-      contactNumber: new FormControl(''),
-      facilityType: new FormControl(''),
-      catagory: new FormControl(''),
-      purpose: new FormControl(''),
-      term: new FormControl(''),
-      ccy: new FormControl(''),
-      amount: new FormControl(''),
-      propertytype: new FormControl(''),
-      fosreferenceNumber: new FormControl(''),
+      username: new FormControl({ value: this.applicationStorageService.getusername(), disabled: true }),
+      buisnessUnit: new FormControl({ value: this.applicationStorageService.getBusinessUnit(), disabled: true }),
+      contactNumber: new FormControl('', Validators.compose([
+        Validators.required,
+        Validators.pattern("^[0-9]*$")
+      ])),
+      facilityType: new FormControl('', Validators.required),
+      catagory: new FormControl('', Validators.required),
+      purpose: new FormControl('', Validators.required),
+      term: new FormControl('', Validators.compose([
+        Validators.required,
+        Validators.pattern("^[0-9]*$")
+      ])),
+      ccy: new FormControl('', Validators.required),
+      amount: new FormControl('', Validators.compose(
+        [Validators.required,
+        Validators.pattern("^[0-9]*$")
+        ]
+      )),
+      propertytype: new FormControl('', Validators.required),
+      fosreferenceNumber: new FormControl(referenceNumber),
       borrowers: new FormArray([this.addBorrowerForm()]),
       comments: new FormArray([this.addCommentsForm()]),
       documents: new FormArray([this.addDocumentsForm()]),
     });
-    this.applicationStorageService.getBusinessUnit();
     this.formarray = this.pvForm.get('borrowers') as FormArray;
+    this.documents = this.pvForm.get('documents') as FormArray;
+    this.comments = this.pvForm.get('comments') as FormArray;
   }
 
   addBorrowerForm(): FormGroup {
     return this.fb.group({
-      name: "",
-      customerNumber: "",
-      address: "",
-      contactNumber: "",
-      email: ""
+      name: ["", Validators.compose(
+        [Validators.required
+        ]
+      )],
+      customerNumber: ["", Validators.required],
+      address: ["", Validators.required],
+      contactNumber: ["", Validators.compose(
+        [Validators.required,
+        Validators.pattern("^[0-9]*$")
+        ]
+      )],
+      email: ["", Validators.compose(
+        [Validators.required,
+        Validators.email,
+        ]
+      )],
     });
   }
 
   addCommentsForm(): FormGroup {
     return this.fb.group({
-      comment: "",
+      comment: ["", Validators.required],
       createdDate: ""
     });
   }
 
   addDocumentsForm(): FormGroup {
     return this.fb.group({
-      type: { id: "", name: "" },
+      type: ["", Validators.required],
       document: ""
     });
   }
@@ -94,28 +133,27 @@ console.log(this.applicationStorageService.getBusinessUnit());
   }
 
   submitForm() {
-    console.log(this.pvForm.value);
-    this.pvApplicationReq = new pvApplicationRequest();
-    this.populatePvApplicationRequest(this.pvApplicationReq);
-    console.log(this.formarray);
-    console.log(this.pvApplicationReq);
-    this.pvAppService.createPvForm(this.pvApplicationReq, this.fileForUpload).subscribe(res =>{
-      console.log(res);
-    }, error =>{
-      alert("Error occurs whilte creating application");
-    })
+    this.pvApplicationReq = new PVApplicationRequest();
+    this.populatePVApplicationRequest(this.pvApplicationReq);
+    this.pvAppService.createPvForm(this.pvApplicationReq, this.fileForUpload).subscribe(res => {
+      alert("New application created Successfully");
+      this.router.navigate(['home/pvview']);
+    }, (error => {
+      //alert("Error occured while creating application");
+    }
+    ));
   }
 
-  populatePvApplicationRequest(request: pvApplicationRequest) {
+  populatePVApplicationRequest(request: PVApplicationRequest) {
     const formData = this.pvForm.value;
     request.fosreferenceNumber = formData.fosreferenceNumber;
     request.type = formData.propertytype;
-    request.createBy = {
+    request.createdBy = {
       userid: this.applicationStorageService.getUserId(),
       username: this.applicationStorageService.getusername(),
       businessUnit: this.applicationStorageService.getBusinessUnit(),
       contactNumber: formData.contactNumber,
-      roles: { id: this.applicationStorageService.getroleId(), name: '' }
+      roles: []
     };
 
     request.facilityDto = {
@@ -130,26 +168,21 @@ console.log(this.applicationStorageService.getBusinessUnit());
     request.commentsDto = [...formData.comments];
     request.documentsDto = [
       {
-        type: { id: 0, name: formData.type },
+        type: { id: 0, name: formData.documents[0].type },
         document: ""
       }
     ];
-   // request.documentsDto = [...formData.documents];
-
-    // request.documentsDto[0] = new Document();
-    // request.documentsDto[0].document = "file";
-    // request.documentsDto[0].type = new DropdownData();
-    // request.documentsDto[0].type.name = "sale deed";
-  
   }
 
   onChangeFile(event: any) {
     if (event.target.files.length > 0) {
-      console.log("file added");
       const file = event.target.files[0];
-      console.log(file);
       this.fileForUpload = file;
     }
+  }
+
+  viewAppPage() {
+    this.router.navigate(['home/pvview']);
   }
 
 }

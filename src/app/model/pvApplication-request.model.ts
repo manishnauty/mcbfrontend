@@ -5,13 +5,12 @@ import { Document } from "./document-model";
 import { Comment } from "./comment-model";
 
 
-export class pvApplicationRequest{
+export class PVApplicationRequest{
     fosreferenceNumber!: string;
     type!: string;
-    createBy!: User
+    createdBy!: User
     facilityDto!: Facilty
     borrowersDto: Borrower[] = [];
     documentsDto: Document[] = [];
     commentsDto: Comment[] = [];
-  request: any;
 }

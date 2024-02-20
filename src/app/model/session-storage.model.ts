@@ -5,4 +5,5 @@ export class SessionStorageModel {
     refreshToken: string = '';
     roleId: number = 0;
     businessUnit: string = '';
+    refNo:number = 0;
 }
