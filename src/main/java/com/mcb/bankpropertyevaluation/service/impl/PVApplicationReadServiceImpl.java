@@ -169,10 +169,7 @@ public class PVApplicationReadServiceImpl implements PVApplicationReadService {
             pvApplication.getDocuments().forEach(document -> {
                 DocumentDto documentDto = new DocumentDto();
                 DocumentTypeDto documentTypeDto = new DocumentTypeDto();
-                //BeanUtils.copyProperties(document,documentDto);
                 documentDto.setDocument(document.getDocument());
-                //BeanUtils.copyProperties(document.getType(), documentTypeDto);
-                //documentDto.setType(documentTypeDto);
                 documentDtoList.add(documentDto);
             });
         } else {

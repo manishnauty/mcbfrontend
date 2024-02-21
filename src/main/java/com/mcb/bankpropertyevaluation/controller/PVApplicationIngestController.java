@@ -9,6 +9,7 @@ import com.mcb.bankpropertyevaluation.service.PVApplicationIngestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,6 +25,7 @@ public class PVApplicationIngestController {
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     @PostMapping("/evaluationform")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<FormResponse> createEvaluationApplication(@RequestParam("file") MultipartFile file, @RequestParam("appData") String appData) throws JsonProcessingException {
 
         MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);

@@ -75,7 +75,6 @@ public class UserServiceImpl implements UserService {
 		if (userRepository.existsByUsername(userRequestDTO.getUsername())) {
 			throw new GenericException("Username is already taken!", HttpStatus.CONFLICT);
 		}
-		// Create new user's account
 		User user = new User(userRequestDTO.getUsername(), encoder.encode(userRequestDTO.getPassword()),userRequestDTO.getContactNumber(), userRequestDTO.getBuisnessUnit());
 		Set<Role> roles = new HashSet<>();
 

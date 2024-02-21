@@ -21,29 +21,31 @@ public class PVApplicationReadController {
     @Autowired
     private PVApplicationReadService pvApplicationReadService;
     @GetMapping("/currencies")
-    //@PreAuthorize("hasAuthority('EMPLOYEE') or hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<CurrencyDto>> getCurrencies() {
         return new ResponseEntity<>(pvApplicationReadService.getCurrencies(), HttpStatus.OK);
     }
 
     @GetMapping("/facilitytypes")
-    //@PreAuthorize("hasAuthority('EMPLOYEE') or hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<FacilityTypeDto>> getFacilityTypes() {
         return new ResponseEntity<>(pvApplicationReadService.getFacilityTypes(), HttpStatus.OK);
     }
 
     @GetMapping("/documenttypes")
-    //@PreAuthorize("hasAuthority('EMPLOYEE') or hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<DocumentTypeDto>> getDocumentTypes() {
         return new ResponseEntity<>(pvApplicationReadService.getDocumentTypes(), HttpStatus.OK);
     }
 
     @GetMapping("/fetchapplication")
+    @PreAuthorize("hasAuthority('EMPLOYEE') or hasAuthority('ADMIN')")
     public ResponseEntity<List<PVApplicationDto>> fetchAllApplication(){
         return new ResponseEntity<>(pvApplicationReadService.fetchApplication(), HttpStatus.OK);
     }
 
     @GetMapping("/fetchapplication/{id}")
+    @PreAuthorize("hasAuthority('EMPLOYEE') or hasAuthority('ADMIN')")
     public ResponseEntity<PVApplicationDto> fetchApplicationById(@PathVariable Long id){
         return new ResponseEntity<>(pvApplicationReadService.fetchApplicationById(id), HttpStatus.OK);
     }
