@@ -14,7 +14,7 @@ const routes: Routes = [
         children: [
             { path: '', component: PvApplicationsViewComponent, pathMatch: 'full' },
             { path: 'pvview', component: PvApplicationsViewComponent, pathMatch: 'full' },
-            { path: 'pvform', component: PvformComponent, canActivate: [SessionGuardService], data: { roles: 1 } }
+            { path: 'pvform', component: PvformComponent, canActivate: [SessionGuardService,AuthGuardService], data: { roles: 1 } }
         ]
     },
 ];

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PVAppService } from '../../service/pvApp.service';
 import { Router } from '@angular/router';
+import { ApplicationStorageService } from '../../service/application-storage.service';
 
 export interface PeriodicElement {
   reference: string;
@@ -32,11 +33,13 @@ export class PvApplicationsViewComponent implements OnInit {
 
   sourceArr: [] = [];
   appArr: [] = [];
+  roleId!: number;
 
-  constructor(private pvAppService: PVAppService, private router: Router) { }
+  constructor(private pvAppService: PVAppService, private router: Router, private applicationStorageService: ApplicationStorageService) { }
 
 
   ngOnInit(): void {
+    this.roleId = this.applicationStorageService.getroleId();
     this.pvAppService.fetchApplications().subscribe((res: any) => {
       this.appArr = [...res] as any;
       this.sourceArr = [...res] as any;
